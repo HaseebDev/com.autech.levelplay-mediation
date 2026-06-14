@@ -9,16 +9,16 @@ namespace Autech.LevelPlay.DevTools
     /// Dev-only release tooling (lives in Assets/Editor, NOT shipped with the package).
     ///
     /// Repo layout (mirrors the Autech AdMob package):
-    ///   • Assets/LevelPlay/  — the editable / testable working copy (source of truth)
+    ///   • Assets/AutechLevelPlay/  — the editable / testable working copy (source of truth)
     ///   • repo root Runtime/, Editor/, Samples~/ — the distributed UPM package mirror
     ///
-    /// Release flow: edit in Assets/LevelPlay → "Sync dev copy → root package" →
+    /// Release flow: edit in Assets/AutechLevelPlay → "Sync dev copy → root package" →
     /// "Export .unitypackage" → commit, tag, attach the .unitypackage to a GitHub Release.
     /// See RELEASING.md.
     /// </summary>
     public static class AutechPackageExporter
     {
-        const string DevRoot   = "Assets/LevelPlay";
+        const string DevRoot   = "Assets/AutechLevelPlay";
         const string RepoRoot  = ""; // resolved from Application.dataPath/..
 
         [MenuItem("Tools/Autech/Export .unitypackage")]
@@ -40,20 +40,20 @@ namespace Autech.LevelPlay.DevTools
         }
 
         /// <summary>
-        /// Copies the editable Assets/LevelPlay copy into the repo-root package mirror
+        /// Copies the editable Assets/AutechLevelPlay copy into the repo-root package mirror
         /// (Runtime/, Editor/, Samples~/) that consumers install via git URL / OpenUPM.
         /// </summary>
         [MenuItem("Tools/Autech/Sync dev copy → root package")]
         public static void SyncToRoot()
         {
-            // Assets/LevelPlay (flattened) -> root Runtime/{asmdef,Scripts,Plugins}
+            // Assets/AutechLevelPlay (flattened) -> root Runtime/{asmdef,Scripts,Plugins}
             CopyInto($"{DevRoot}/Autech.LevelPlay.Runtime.asmdef",      "Runtime/Autech.LevelPlay.Runtime.asmdef");
             CopyInto($"{DevRoot}/Autech.LevelPlay.Runtime.asmdef.meta", "Runtime/Autech.LevelPlay.Runtime.asmdef.meta");
             CopyTree($"{DevRoot}/Scripts", "Runtime/Scripts");
             CopyTree($"{DevRoot}/Plugins", "Runtime/Plugins");
             CopyTree($"{DevRoot}/Editor",  "Editor");
 
-            Debug.Log("[Autech] Synced Assets/LevelPlay -> root package (Runtime/, Editor/). " +
+            Debug.Log("[Autech] Synced Assets/AutechLevelPlay -> root package (Runtime/, Editor/). " +
                       "Review the example scene under Samples~ manually if it changed.");
         }
 

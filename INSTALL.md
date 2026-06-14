@@ -7,13 +7,13 @@ There are two supported ways to add this package to a Unity project.
 `Window → Package Manager → +  → Add package from git URL…` and paste:
 
 ```
-https://github.com/HaseebDev/com.autech.levelplay-mediation.git
+https://github.com/HaseebDev/LevelPlay-Mediation-Package.git
 ```
 
 To pin a specific release, append a tag:
 
 ```
-https://github.com/HaseebDev/com.autech.levelplay-mediation.git#v1.0.0
+https://github.com/HaseebDev/LevelPlay-Mediation-Package.git#v1.0.0
 ```
 
 …or add it directly to `Packages/manifest.json`:
@@ -21,14 +21,14 @@ https://github.com/HaseebDev/com.autech.levelplay-mediation.git#v1.0.0
 ```json
 {
   "dependencies": {
-    "com.autech.levelplay-mediation": "https://github.com/HaseebDev/com.autech.levelplay-mediation.git#v1.0.0"
+    "com.autech.levelplay-mediation": "https://github.com/HaseebDev/LevelPlay-Mediation-Package.git#v1.0.0"
   }
 }
 ```
 
 ## 2. `.unitypackage` from a GitHub Release
 
-1. Open the [Releases page](https://github.com/HaseebDev/com.autech.levelplay-mediation/releases).
+1. Open the [Releases page](https://github.com/HaseebDev/LevelPlay-Mediation-Package/releases).
 2. Download `com.autech.levelplay-mediation-<version>.unitypackage`.
 3. In Unity: `Assets → Import Package → Custom Package…` and select the file.
    (Imports the package under `Assets/LevelPlay`.)

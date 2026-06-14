@@ -26,17 +26,17 @@ namespace swap (`Autech.Admob` → `Autech.LevelPlay`) plus new dashboard ids.
 **Via Package Manager (git URL):** `Window → Package Manager → + → Add package from git URL…`
 
 ```
-https://github.com/HaseebDev/com.autech.levelplay-mediation.git
+https://github.com/HaseebDev/LevelPlay-Mediation-Package.git
 ```
 
 Or pin a version in `Packages/manifest.json`:
 
 ```json
-"com.autech.levelplay-mediation": "https://github.com/HaseebDev/com.autech.levelplay-mediation.git#v1.0.0"
+"com.autech.levelplay-mediation": "https://github.com/HaseebDev/LevelPlay-Mediation-Package.git#v1.0.0"
 ```
 
 **Via `.unitypackage`:** download the asset from the latest
-[GitHub Release](https://github.com/HaseebDev/com.autech.levelplay-mediation/releases)
+[GitHub Release](https://github.com/HaseebDev/LevelPlay-Mediation-Package/releases)
 and import it (`Assets → Import Package → Custom Package…`). See `INSTALL.md`.
 
 Requires Unity 2021.3+. The `com.unity.services.levelplay` dependency (Ads Mediation,

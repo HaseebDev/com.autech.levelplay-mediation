@@ -6,27 +6,27 @@ This repo mirrors the **Autech AdMob** package layout.
 repo root/
 ├── package.json, README.md, CHANGELOG.md, LICENSE.md, INSTALL.md
 ├── Runtime/  Editor/  Samples~/      ← the DISTRIBUTED UPM package (git URL / OpenUPM)
-├── Assets/LevelPlay/                 ← the EDITABLE / TESTABLE working copy (source of truth)
+├── Assets/AutechLevelPlay/                 ← the EDITABLE / TESTABLE working copy (source of truth)
 ├── Assets/Editor/AutechPackageExporter.cs   ← dev-only release tooling
 ├── Packages/ ProjectSettings/        ← the Unity dev project (so the repo opens)
 └── .npmignore .gitattributes .gitignore
 ```
 
-You **edit and test** in `Assets/LevelPlay` (open the repo in Unity). The repo-root
+You **edit and test** in `Assets/AutechLevelPlay` (open the repo in Unity). The repo-root
 `Runtime/`/`Editor/`/`Samples~/` is the clean copy consumers install; it is kept in
-sync from `Assets/LevelPlay` at release time.
+sync from `Assets/AutechLevelPlay` at release time.
 
 Releases are **manual** (no CI): a git tag **and** a `.unitypackage` attached to a
 GitHub Release.
 
 ## One-time
 
-- Remote points at `github.com/HaseebDev/com.autech.levelplay-mediation` and the
+- Remote points at `github.com/HaseebDev/LevelPlay-Mediation-Package` and the
   `package.json` URLs match. (Done.)
 
 ## Cutting a release
 
-1. **Edit & test** in `Assets/LevelPlay` (open the repo root in Unity 6000.x).
+1. **Edit & test** in `Assets/AutechLevelPlay` (open the repo root in Unity 6000.x).
 2. **Sync** the dev copy into the root package mirror:
    Unity menu **Tools ▸ Autech ▸ Sync dev copy → root package**.
    (If you changed the example scene, copy it into `Samples~/ExampleScene/` too.)
@@ -46,7 +46,7 @@ GitHub Release.
 
 ## How consumers install
 
-- **git URL:** `…/com.autech.levelplay-mediation.git#v1.0.1`
+- **git URL:** `…/LevelPlay-Mediation-Package.git#v1.0.1`
 - **.unitypackage:** download from the Release and import.
 
 See `INSTALL.md` for the full instructions.
