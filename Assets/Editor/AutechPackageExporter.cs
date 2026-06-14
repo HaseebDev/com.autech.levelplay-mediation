@@ -6,37 +6,90 @@ using UnityEngine;
 namespace Autech.LevelPlay.DevTools
 {
     /// <summary>
-    /// Dev-only tool (lives in the project's Assets/, NOT in the shipped package)
-    /// that exports the embedded LevelPlay package to a versioned .unitypackage
-    /// under /dist. See RELEASING.md.
+    /// Dev-only release tooling (lives in Assets/Editor, NOT shipped with the package).
+    ///
+    /// Repo layout (mirrors the Autech AdMob package):
+    ///   • Assets/LevelPlay/  — the editable / testable working copy (source of truth)
+    ///   • repo root Runtime/, Editor/, Samples~/ — the distributed UPM package mirror
+    ///
+    /// Release flow: edit in Assets/LevelPlay → "Sync dev copy → root package" →
+    /// "Export .unitypackage" → commit, tag, attach the .unitypackage to a GitHub Release.
+    /// See RELEASING.md.
     /// </summary>
     public static class AutechPackageExporter
     {
-        const string PackageRoot = "Packages/com.autech.levelplay-mediation";
+        const string DevRoot   = "Assets/LevelPlay";
+        const string RepoRoot  = ""; // resolved from Application.dataPath/..
 
-        [MenuItem("Tools/Autech/Export LevelPlay .unitypackage")]
+        [MenuItem("Tools/Autech/Export .unitypackage")]
         public static void Export()
         {
-            var packageJsonPath = PackageRoot + "/package.json";
-            if (!File.Exists(packageJsonPath))
+            if (!Directory.Exists(DevRoot))
             {
-                Debug.LogError($"[Autech] package.json not found at {packageJsonPath}");
+                Debug.LogError($"[Autech] {DevRoot} not found.");
                 return;
             }
-
-            var version = ParseVersion(File.ReadAllText(packageJsonPath));
-            var outDir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "dist"));
+            var version = ReadVersion();
+            var outDir = AbsRepoPath("releases");
             Directory.CreateDirectory(outDir);
             var outPath = Path.Combine(outDir, $"com.autech.levelplay-mediation-{version}.unitypackage");
 
-            AssetDatabase.ExportPackage(PackageRoot, outPath, ExportPackageOptions.Recurse);
+            AssetDatabase.ExportPackage(DevRoot, outPath, ExportPackageOptions.Recurse);
             Debug.Log($"[Autech] Exported v{version} -> {outPath}");
             EditorUtility.RevealInFinder(outPath);
         }
 
-        // Minimal extractor for the JSON "version" field — avoids pulling a JSON lib.
-        static string ParseVersion(string json)
+        /// <summary>
+        /// Copies the editable Assets/LevelPlay copy into the repo-root package mirror
+        /// (Runtime/, Editor/, Samples~/) that consumers install via git URL / OpenUPM.
+        /// </summary>
+        [MenuItem("Tools/Autech/Sync dev copy → root package")]
+        public static void SyncToRoot()
         {
+            // Assets/LevelPlay (flattened) -> root Runtime/{asmdef,Scripts,Plugins}
+            CopyInto($"{DevRoot}/Autech.LevelPlay.Runtime.asmdef",      "Runtime/Autech.LevelPlay.Runtime.asmdef");
+            CopyInto($"{DevRoot}/Autech.LevelPlay.Runtime.asmdef.meta", "Runtime/Autech.LevelPlay.Runtime.asmdef.meta");
+            CopyTree($"{DevRoot}/Scripts", "Runtime/Scripts");
+            CopyTree($"{DevRoot}/Plugins", "Runtime/Plugins");
+            CopyTree($"{DevRoot}/Editor",  "Editor");
+
+            Debug.Log("[Autech] Synced Assets/LevelPlay -> root package (Runtime/, Editor/). " +
+                      "Review the example scene under Samples~ manually if it changed.");
+        }
+
+        // ---- helpers -------------------------------------------------------
+
+        static string AbsRepoPath(string rel) =>
+            Path.GetFullPath(Path.Combine(Application.dataPath, "..", rel));
+
+        static void CopyInto(string assetRelPath, string repoRelPath)
+        {
+            var src = AbsRepoPath(assetRelPath);
+            var dst = AbsRepoPath(repoRelPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(dst));
+            File.Copy(src, dst, overwrite: true);
+        }
+
+        static void CopyTree(string assetRelDir, string repoRelDir)
+        {
+            var src = AbsRepoPath(assetRelDir);
+            var dst = AbsRepoPath(repoRelDir);
+            if (Directory.Exists(dst)) Directory.Delete(dst, recursive: true);
+            DirCopy(src, dst);
+        }
+
+        static void DirCopy(string src, string dst)
+        {
+            Directory.CreateDirectory(dst);
+            foreach (var f in Directory.GetFiles(src))
+                File.Copy(f, Path.Combine(dst, Path.GetFileName(f)), overwrite: true);
+            foreach (var d in Directory.GetDirectories(src))
+                DirCopy(d, Path.Combine(dst, Path.GetFileName(d)));
+        }
+
+        static string ReadVersion()
+        {
+            var json = File.ReadAllText(AbsRepoPath("package.json"));
             const string key = "\"version\"";
             var i = json.IndexOf(key, System.StringComparison.Ordinal);
             if (i < 0) return "unknown";

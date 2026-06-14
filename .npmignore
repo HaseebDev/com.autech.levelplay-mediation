@@ -1,0 +1,47 @@
+# What to EXCLUDE when publishing the package (npm pack / OpenUPM).
+# Keep only the UPM package payload at the repo root.
+
+# Unity dev-project files — not part of the package
+Assets/
+Packages/
+ProjectSettings/
+Library/
+Temp/
+Logs/
+UserSettings/
+obj/
+.utmp/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.userprefs
+.DS_Store
+
+# Build / release outputs
+Build/
+Builds/
+releases/
+dist/
+*.unitypackage
+*.tgz
+
+# Repo meta / tooling
+.git/
+.github/
+.vscode/
+.idea/
+RELEASING.md
+
+# Keep ONLY the package structure
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE.md
+!INSTALL.md
+!Runtime/
+!Editor/
+!Samples~/
+!Documentation~/

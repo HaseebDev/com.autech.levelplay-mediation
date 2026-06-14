@@ -1,0 +1,23 @@
+# Normalize line endings; treat Unity YAML + sources as text.
+* text=auto eol=lf
+
+*.cs        text diff=csharp
+*.asmdef    text
+*.json      text
+*.md        text
+*.meta      text eol=lf
+*.unity     text eol=lf
+*.prefab    text eol=lf
+*.asset     text eol=lf
+*.mm        text
+
+# Binary assets (no diff / no eol munging)
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.dll   binary
+*.so    binary
+*.a     binary
+*.aar   binary
+*.unitypackage binary

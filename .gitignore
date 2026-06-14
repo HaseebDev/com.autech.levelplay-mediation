@@ -1,9 +1,11 @@
-# ── Unity development project (root) ──────────────────────────────
-# This repo is a Unity project used to develop & test the embedded
-# package at Packages/com.autech.levelplay-mediation. The package is
-# distributed via git URL (?path=) + version tags. See RELEASING.md.
+# ── Autech LevelPlay Mediation ────────────────────────────────────
+# Layout mirrors the Autech AdMob package:
+#   • repo root Runtime/, Editor/, Samples~/, package.json  -> distributed package
+#   • Assets/LevelPlay/  -> editable / testable working copy (TRACKED)
+#   • Packages/manifest.json, ProjectSettings/  -> dev project (TRACKED, so it opens)
+# Releases (.unitypackage) go to GitHub Releases, not the repo.
 
-# Unity-generated, machine-local — never commit
+# Unity-generated / machine-local
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -12,28 +14,33 @@
 [Ll]ogs/
 [Uu]serSettings/
 [Mm]emoryCaptures/
+.utmp/
+
+# IDE / OS
 .vs/
+.vscode/
+.idea/
+.bezisidekick/
 *.csproj
 *.sln
 *.suo
-*.unityproj
-
-# IDEs / OS
-.idea/
-.vscode/
-*.swp
 *.user
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# Node (in case tooling is added later)
+# Release artifacts (publish to GitHub Releases, do not commit)
+releases/
+dist/
+*.unitypackage
+*.tgz
+
+# node (if tooling is added later)
 node_modules/
 
-# External Dependency Manager (EDM4U / "MobileDependencyResolver") is a
-# third-party redistributable provided by the LevelPlay SDK itself — it must
-# NOT be vendored in this wrapper repo (a loose Assets/ copy alongside the one
-# LevelPlay ships causes a fatal "multiple precompiled assemblies" error).
+# External Dependency Manager (EDM4U) is provided by the LevelPlay SDK — never
+# vendor a loose copy here (a duplicate causes a fatal "multiple precompiled
+# assemblies" error).
 Assets/MobileDependencyResolver/
 Assets/MobileDependencyResolver.meta
 Assets/ExternalDependencyManager/
@@ -41,18 +48,7 @@ Assets/ExternalDependencyManager.meta
 Assets/PlayServicesResolver/
 Assets/PlayServicesResolver.meta
 
-# Release artifacts produced locally (the .unitypackage / tarball)
-/dist/
-*.unitypackage
-*.tgz
-
-# ── Keep these TRACKED (they define the reproducible dev project) ──
-#   Packages/manifest.json, Packages/packages-lock.json
-#   ProjectSettings/**
-#   Packages/com.autech.levelplay-mediation/**  (the package itself)
-#
-# UPM hidden folders (Samples~, Documentation~) must stay tracked —
-# re-include in case a global gitignore matches *~
+# UPM hidden folders must stay tracked (in case a global gitignore matches *~)
 !*~/
 !**/Samples~/**
 !**/Documentation~/**
