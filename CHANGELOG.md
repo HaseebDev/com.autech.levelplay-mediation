@@ -23,17 +23,19 @@
   — LevelPlay supports iOS/Android only, so there is no longer a toggle to serve ads there.
 
 ### Fixed
-- **InMobi CMP Android build failure and runtime crash.** The bundled InMobi
-  `.aar` doesn't declare its transitive Android dependencies, causing two
-  failures: a build-time resource-linking error
-  (`AAPT: error: resource style/Theme.Design.BottomSheetDialog not found` — the
-  Choice consent UI is a Material `BottomSheetDialog`), and a runtime crash on
-  scene load when consent starts
-  (`java.lang.NoClassDefFoundError: Lcom/google/gson/Gson;` — the plugin parses
-  JSON via Gson; note `newtonsoft-json` is C# and does not satisfy this Java
-  need). Added a `ChoiceCMPDependencies.xml` (EDM4U) declaring
-  `com.google.android.material:material:1.12.0` and `com.google.code.gson:gson:2.10.1`,
-  shipped with the InMobi CMP sample.
+- **InMobi CMP Android build failure and runtime crashes.** InMobi's plugin
+  declares none of its Android dependencies (its post-build processor only sets
+  `android.useAndroidX=true`), so on Unity the build fails and the app crashes on
+  scene load. Added a `ChoiceCMPDependencies.xml` (EDM4U), shipped with the InMobi
+  CMP sample, declaring the libraries the Choice SDK actually uses:
+  `com.google.android.material:material:1.12.0` (Material `BottomSheetDialog` —
+  fixes `AAPT: resource style/Theme.Design.BottomSheetDialog not found`),
+  `com.google.code.gson:gson:2.10.1` (fixes `NoClassDefFoundError Lcom/google/gson/Gson;`;
+  `newtonsoft-json` is C# and does not satisfy this Java need),
+  `androidx.preference:preference:1.2.1` (fixes
+  `NoClassDefFoundError Landroidx/preference/PreferenceManager;`), and
+  `androidx.constraintlayout:constraintlayout:2.1.4` (consent-UI layouts). The
+  auto-import prompt also triggers an EDM Android resolve so consumers don't hit these.
 
 ### Changed
 - **Consent is now a real CMP.** Replaced the placeholder built-in GDPR dialog

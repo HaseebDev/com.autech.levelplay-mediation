@@ -59,12 +59,13 @@ download it separately.
 3. On the **VerifyandInitializeLevelPlay** prefab (Inspector → *Consent & Privacy*),
    paste your **CMP p-code** (the leading `p-` is optional).
 4. Per-platform build setup is handled for you:
-   - **Android** dependencies are declared in `ChoiceCMPDependencies.xml` (shipped
-     with the sample) and resolved by the **External Dependency Manager (EDM4U)**
-     that comes with the LevelPlay SDK: **Material Components** + **Gson** (the
-     consent UI is a Material `BottomSheetDialog` and the plugin parses JSON with
-     Gson), plus the `com.iabgpp:iabgpp-encoder` gradle dependency. The package
-     kicks off a resolve automatically right after the InMobi CMP import.
+   - **Android**: InMobi's plugin declares **no** Android dependencies itself (its
+     post-build processor only sets `android.useAndroidX=true`). This package fills
+     that gap with `ChoiceCMPDependencies.xml` (shipped with the sample), resolved
+     by the **External Dependency Manager (EDM4U)** that comes with the LevelPlay
+     SDK — **Material Components**, **Gson**, **androidx.preference**, and
+     **androidx.constraintlayout** (the libraries the Choice SDK actually uses).
+     A resolve runs automatically right after the InMobi CMP import.
    - **iOS**: the CMP framework via the bundled post-build processor.
 
    See the [InMobi CMP Unity docs](https://support.inmobi.com/choice/other-resources/unity-app-implementation-sdk/).
@@ -82,10 +83,12 @@ the cause is almost always that the EDM4U resolver hasn't run yet. Fix:
 | Symptom | Missing dependency |
 |---|---|
 | Build error: `AAPT: error: resource style/Theme.Design.BottomSheetDialog not found` | `com.google.android.material:material` |
-| App crashes on scene load: `java.lang.NoClassDefFoundError: Lcom/google/gson/Gson;` | `com.google.code.gson:gson` |
+| Crash on scene load: `NoClassDefFoundError: Lcom/google/gson/Gson;` | `com.google.code.gson:gson` |
+| Crash on scene load: `NoClassDefFoundError: Landroidx/preference/PreferenceManager;` | `androidx.preference:preference` |
+| Crash / inflate error when the consent UI shows (ConstraintLayout) | `androidx.constraintlayout:constraintlayout` |
 
-Both are declared in `ChoiceCMPDependencies.xml`; a Force Resolve injects them into
-`mainTemplate.gradle`. (`newtonsoft-json` is the C# JSON library and does **not**
+All four are declared in `ChoiceCMPDependencies.xml`; a Force Resolve injects them
+into `mainTemplate.gradle`. (`newtonsoft-json` is the C# JSON library and does **not**
 satisfy the plugin's native Gson requirement.)
 
 ## Quick start

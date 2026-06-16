@@ -2,21 +2,31 @@
 <!--
   InMobi CMP (Choice) Android dependencies.
 
-  The bundled InMobi-CMP .aar does not declare its transitive Android
-  dependencies, so they must be declared here for the External Dependency
-  Manager (EDM4U, shipped with the LevelPlay SDK) to fetch them into the
-  Gradle build. Two are required (the same set InMobi's official plugin ships):
+  The bundled InMobi-CMP .aar declares NO transitive dependencies (its Maven POM
+  is bare), so every third-party library it uses must be declared here for the
+  External Dependency Manager (EDM4U, shipped with the LevelPlay SDK) to fetch
+  into the Gradle build. The list below was derived from the classes the .aar
+  actually references; without them the app fails to build or crashes on the
+  first consent call when the scene loads:
 
-    1. Material Components — the Choice consent UI is a Material
-       BottomSheetDialog (style/Theme.Design.BottomSheetDialog). Without it the
-       build fails at resource linking:
-           AAPT: error: resource style/Theme.Design.BottomSheetDialog not found.
+    - com.google.android.material:material — the consent UI is a Material
+      BottomSheetDialog (style/Theme.Design.BottomSheetDialog). Missing →
+      build error: "AAPT: resource style/Theme.Design.BottomSheetDialog not found".
+      (Also pulls appcompat / fragment / recyclerview / cardview / lifecycle /
+      core transitively, which the SDK uses.)
+    - com.google.code.gson:gson — the plugin parses style/config JSON via
+      com.google.gson.Gson. Missing → crash: NoClassDefFoundError Lcom/google/gson/Gson;
+      (newtonsoft-json is the C# JSON lib and does NOT satisfy this Java need.)
+    - androidx.preference:preference — Choice stores TCF consent through
+      androidx.preference.PreferenceManager. Missing → crash:
+      NoClassDefFoundError Landroidx/preference/PreferenceManager; (NOT a Material
+      transitive, so it must be declared explicitly).
+    - androidx.constraintlayout:constraintlayout — the consent screens are laid
+      out with ConstraintLayout. Missing → inflate/ClassNotFound crash when the
+      CMP UI is shown (NOT a Material transitive).
 
-    2. Gson — the InMobi Unity plugin parses style/config JSON via
-       com.google.gson.Gson at runtime. Without it the app CRASHES on the first
-       consent call when the scene loads:
-           java.lang.NoClassDefFoundError: Lcom/google/gson/Gson;
-       (newtonsoft-json is the C# JSON lib and does NOT satisfy this Java need.)
+  Kotlin stdlib + coroutines (also used by the SDK) are already provided by the
+  LevelPlay/ironSource Kotlin SDK, so they are intentionally not declared here.
 
   After changing this file run: Assets > External Dependency Manager >
   Android Resolver > Force Resolve.
@@ -25,5 +35,7 @@
   <androidPackages>
     <androidPackage spec="com.google.android.material:material:1.12.0" />
     <androidPackage spec="com.google.code.gson:gson:2.10.1" />
+    <androidPackage spec="androidx.preference:preference:1.2.1" />
+    <androidPackage spec="androidx.constraintlayout:constraintlayout:2.1.4" />
   </androidPackages>
 </dependencies>
